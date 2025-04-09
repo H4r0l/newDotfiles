@@ -1,52 +1,47 @@
---
--- ███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
--- ████╗  ██║██╔════╝██╔═══██╗██║   ██║██║████╗ ████║
--- ██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
--- ██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
--- ██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
--- ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
---
--- File: config/keymaps.lua
--- Description: Key mapping configs
--- Author: Kien Nguyen-Tuan <kiennt2609@gmail.com>
--- Close all windows and exit from Neovim with <leader> and q
-vim.keymap.set("n", "<leader>q", ":qa!<CR>", {})
--- Fast saving with <leader> and s
-vim.keymap.set("n", "<leader>s", ":w<CR>", {})
--- Move around splits
-vim.keymap.set("n", "<leader>wh", "<C-h>", {})
-vim.keymap.set("n", "<leader>wj", "<C-j>", {})
-vim.keymap.set("n", "<leader>wk", "<C-k>", {})
-vim.keymap.set("n", "<leader>wl", "<C-l>", {})
+local keymap = vim.keymap
+local opts = { noremap = true, silent = true }
 
--- Reload configuration without restart nvim
-vim.keymap.set("n", "<leader>r", ":so %<CR>", {})
+keymap.set("n", "x", '"_x')
 
--- Telescope
--- <leader> is a space now
-local builtin = require("telescope.builtin")
-vim.keymap.set("n", "<leader>ff", builtin.find_files, {})
-vim.keymap.set("n", "<leader>fg", builtin.live_grep, {})
-vim.keymap.set("n", "<leader>fb", builtin.buffers, {})
-vim.keymap.set("n", "<leader>fh", builtin.help_tags, {})
+-- Increment/decrement
+keymap.set("n", "+", "<C-a>")
+keymap.set("n", "-", "<C-x>")
 
--- NvimTree
-vim.keymap.set("n", "<leader>n", ":NvimTreeToggle<CR>", {}) -- open/close
-vim.keymap.set("n", "<leader>nr", ":NvimTreeRefresh<CR>", {}) -- refresh
-vim.keymap.set("n", "<leader>nf", ":NvimTreeFindFile<CR>", {}) -- search file
+-- Select all
+keymap.set("n", "<C-a>", "gg<S-v>G")
 
--- Terminal
-function _G.set_terminal_keymaps()
-    local opts = {
-        noremap = true
-    }
-    vim.api.nvim_buf_set_keymap(0, 't', '<esc>', [[<C-\><C-n>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', 'jk', [[<C-\><C-n>]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-wh>', [[<C-\><C-n><C-W>h]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-wj>', [[<C-\><C-n><C-W>j]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-wk>', [[<C-\><C-n><C-W>k]], opts)
-    vim.api.nvim_buf_set_keymap(0, 't', '<C-wl>', [[<C-\><C-n><C-W>l]], opts)
-end
+-- Save file and quit
+keymap.set("n", "<Leader>w", ":update<Return>", opts)
+keymap.set("n", "<Leader>q", ":quit<Return>", opts)
+keymap.set("n", "<Leader>Q", ":qa<Return>", opts)
 
-vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
-vim.keymap.set("n", "<leader>tt", ":ToggleTerm<CR>", {})
+-- File explorer with NvimTree
+keymap.set("n", "<Leader>f", ":NvimTreeFindFile<Return>", opts)
+keymap.set("n", "<Leader>t", ":NvimTreeToggle<Return>", opts)
+
+-- Tabs
+keymap.set("n", "te", ":tabedit")
+keymap.set("n", "<tab>", ":tabnext<Return>", opts)
+keymap.set("n", "<s-tab>", ":tabprev<Return>", opts)
+keymap.set("n", "tw", ":tabclose<Return>", opts)
+
+-- Split window
+keymap.set("n", "ss", ":split<Return>", opts)
+keymap.set("n", "sv", ":vsplit<Return>", opts)
+
+-- Move window
+keymap.set("n", "sh", "<C-w>h")
+keymap.set("n", "sk", "<C-w>k")
+keymap.set("n", "sj", "<C-w>j")
+keymap.set("n", "sl", "<C-w>l")
+
+-- Resize window
+keymap.set("n", "<C-S-h>", "<C-w><")
+keymap.set("n", "<C-S-l>", "<C-w>>")
+keymap.set("n", "<C-S-k>", "<C-w>+")
+keymap.set("n", "<C-S-j>", "<C-w>-")
+
+-- Diagnostics
+keymap.set("n", "<C-j>", function()
+  vim.diagnostic.goto_next()
+end, opts)
